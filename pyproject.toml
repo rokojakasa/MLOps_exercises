@@ -18,6 +18,8 @@ classifiers = [
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "dvc>=3.66.0",
+    "dvc-gdrive>=3.0.1",
     "fastapi==0.115.6",
     "matplotlib>=3.10.8",
     "numpy>=2.4.0",
@@ -55,6 +57,7 @@ explicit = true
 
 [tool.ruff]
 line-length = 120
+lint.select = ["I"]
 
 [tool.coverage.run]
 omit = ["tests/*"]

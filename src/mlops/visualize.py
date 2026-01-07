@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 import torch
 import typer
-from mlops.model import Model
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
+
+from mlops.model import Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 

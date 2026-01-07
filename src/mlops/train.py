@@ -1,8 +1,9 @@
-import torch
 import matplotlib.pyplot as plt
+import torch
 import typer
-from mlops.model import Model
+
 from mlops.data import corrupt_mnist
+from mlops.model import Model
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 MODEL_PATH = "models/model.pth"
