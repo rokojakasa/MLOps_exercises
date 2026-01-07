@@ -17,7 +17,7 @@ def preprocess_data(raw_dir: str, processed_dir: str) -> None:
             processed_dir (str): Directory to save processed data
     """
     train_images, train_target = [], []
-    for i in range(6):
+    for i in range(10):
         train_images.append(torch.load(f"{raw_dir}/train_images_{i}.pt"))
         train_target.append(torch.load(f"{raw_dir}/train_target_{i}.pt"))
 

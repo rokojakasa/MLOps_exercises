@@ -21,6 +21,7 @@ dependencies = [
     "dvc>=3.66.0",
     "dvc-gdrive>=3.0.1",
     "fastapi==0.115.6",
+    "gdown>=5.2.0",
     "matplotlib>=3.10.8",
     "numpy>=2.4.0",
     "scikit-learn>=1.8.0",
