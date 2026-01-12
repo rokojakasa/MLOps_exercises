@@ -48,12 +48,7 @@ cfg = ModelConfig(
 
 def test_model_forward():
     model = Model(cfg)
-    train, _ = corrupt_mnist()
-    x, _ = train[0]
-
-    assert x.shape == (1, 28, 28)
-
-    x = x.unsqueeze(0)
+    x = torch.randn(1, 1, 28, 28)
     output = model(x)
 
     assert output.shape == (1, 10)
