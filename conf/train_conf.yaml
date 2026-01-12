@@ -1,0 +1,9 @@
+train:
+  epochs: 10
+  batch_size: 32
+
+  model_path: "models/model.pt"
+  stats_path: "reports/figures"
+
+  loss_fn:
+    _target_: torch.nn.CrossEntropyLoss

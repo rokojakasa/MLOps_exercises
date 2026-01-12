@@ -1,0 +1,4 @@
+defaults:
+  - train_conf
+  - optimizer/adam
+  - model_conf

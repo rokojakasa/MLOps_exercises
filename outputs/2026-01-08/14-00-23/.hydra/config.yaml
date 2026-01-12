@@ -1,0 +1,37 @@
+train:
+  epochs: 10
+  batch_size: 32
+  model_path: models/model.pt
+  stats_path: reports/figures
+  loss_fn:
+    _target_: torch.nn.CrossEntropyLoss
+optimizer:
+  optimizer:
+    _target_: torch.optim.Adam
+    lr: 0.001
+    weight_decay: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+conv1:
+  in_channels: 1
+  out_channels: 32
+  kernel_size: 3
+  stride: 1
+conv2:
+  in_channels: 32
+  out_channels: 64
+  kernel_size: 3
+  stride: 1
+conv3:
+  in_channels: 64
+  out_channels: 128
+  kernel_size: 3
+  stride: 1
+fc1:
+  in_features: 128
+  out_features: 10
+pool:
+  kernel_size: 2
+  stride: 2
+dropout: 0.5

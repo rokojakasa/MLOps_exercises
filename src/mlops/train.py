@@ -1,6 +1,6 @@
+import hydra
 import matplotlib.pyplot as plt
 import torch
-import typer
 
 from mlops.data import corrupt_mnist
 from mlops.model import Model
@@ -10,29 +10,26 @@ MODEL_PATH = "models/model.pth"
 STATS_PATH = "reports/figures"
 
 
-def train(lr: float = 1e-3, batch_size: int = 32, epochs: int = 10) -> None:
+@hydra.main(version_base=None, config_path="../../conf", config_name="config")
+def train(cfg) -> None:
     """
     Function to train the model.
-
-        Parameters:
-            lr (float): Learning rate of the optimizer
-            batch_size (int): Size of each training batch
-            epochs (int): Number of training epochs
     """
     print("Training day and night")
-    print(f"{lr=}, {batch_size=}, {epochs=}")
 
-    model = Model().to(DEVICE)
+    # Load model config and create model
+    model = Model(cfg).to(DEVICE)
+
     train_set, _ = corrupt_mnist()
 
-    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=batch_size)
+    train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=cfg.train.batch_size)
 
-    loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    loss_fn = hydra.utils.instantiate(cfg.train.loss_fn)
+    optimizer = hydra.utils.instantiate(cfg.optimizer.optimizer, params=model.parameters())
 
     statistics = {"train_loss": [], "train_accuracy": []}
 
-    for epoch in range(epochs):
+    for epoch in range(cfg.train.epochs):
         model.train()
         for i, (img, target) in enumerate(train_dataloader):
             img, target = img.to(DEVICE), target.to(DEVICE)
@@ -60,4 +57,4 @@ def train(lr: float = 1e-3, batch_size: int = 32, epochs: int = 10) -> None:
 
 
 if __name__ == "__main__":
-    typer.run(train)
+    train()
