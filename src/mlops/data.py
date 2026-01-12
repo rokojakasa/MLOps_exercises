@@ -1,3 +1,5 @@
+import os
+
 import torch
 import typer
 
@@ -14,7 +16,8 @@ def preprocess_data(raw_dir: str, processed_dir: str) -> None:
     processed_dir (str): Directory to save processed data
     """
     train_images, train_target = [], []
-    for i in range(10):
+    nb_files = len([f for f in os.listdir(raw_dir)])
+    for i in range(nb_files - 2):
         train_images.append(torch.load(f"{raw_dir}/train_images_{i}.pt"))
         train_target.append(torch.load(f"{raw_dir}/train_target_{i}.pt"))
 
