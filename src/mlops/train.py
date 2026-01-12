@@ -12,9 +12,7 @@ STATS_PATH = "reports/figures"
 
 @hydra.main(version_base=None, config_path="../../conf", config_name="config")
 def train(cfg) -> None:
-    """
-    Function to train the model.
-    """
+    """Function to train the model."""
     print("Training day and night")
 
     # Load model config and create model

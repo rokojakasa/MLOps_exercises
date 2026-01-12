@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import torch
 import typer
 
@@ -10,11 +8,10 @@ def normalize(images: torch.Tensor) -> torch.Tensor:
 
 
 def preprocess_data(raw_dir: str, processed_dir: str) -> None:
-    """
-    Process raw data and save processed data
-        Parameters:
-            raw_dir (str): Directory containing raw data
-            processed_dir (str): Directory to save processed data
+    """Process raw data and save processed data
+    Parameters:
+    raw_dir (str): Directory containing raw data
+    processed_dir (str): Directory to save processed data
     """
     train_images, train_target = [], []
     for i in range(10):

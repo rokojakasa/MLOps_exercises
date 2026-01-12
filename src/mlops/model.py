@@ -11,13 +11,22 @@ class Model(nn.Module):
         super().__init__()
         self.config = config
         self.conv1 = nn.Conv2d(
-            config.conv1.in_channels, config.conv1.out_channels, config.conv1.kernel_size, config.conv1.stride
+            config.conv1.in_channels,
+            config.conv1.out_channels,
+            config.conv1.kernel_size,
+            config.conv1.stride,
         )
         self.conv2 = nn.Conv2d(
-            config.conv2.in_channels, config.conv2.out_channels, config.conv2.kernel_size, config.conv2.stride
+            config.conv2.in_channels,
+            config.conv2.out_channels,
+            config.conv2.kernel_size,
+            config.conv2.stride,
         )
         self.conv3 = nn.Conv2d(
-            config.conv3.in_channels, config.conv3.out_channels, config.conv3.kernel_size, config.conv3.stride
+            config.conv3.in_channels,
+            config.conv3.out_channels,
+            config.conv3.kernel_size,
+            config.conv3.stride,
         )
         self.dropout = nn.Dropout(config.dropout)
         self.fc1 = nn.Linear(config.fc1.in_features, config.fc1.out_features)

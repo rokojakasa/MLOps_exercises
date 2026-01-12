@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 import pytest
 import torch
-from mlops.data import corrupt_mnist
 from mlops.model import Model
 
 
