@@ -1,8 +1,11 @@
-import torch
-import pytest
-from mlops.data import corrupt_mnist
-from tests import _PATH_DATA
 import os.path
+
+import pytest
+import torch
+from mlops.data import corrupt_mnist
+
+from tests import _PATH_DATA
+
 
 @pytest.mark.skipif(not os.path.exists(_PATH_DATA), reason="Data files not found")
 def test_my_dataset():
