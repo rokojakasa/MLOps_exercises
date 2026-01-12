@@ -1,7 +1,10 @@
 import hydra
 import matplotlib.pyplot as plt
 import torch
+from omegaconf import DictConfig, OmegaConf
+from sklearn.metrics import RocCurveDisplay, accuracy_score, f1_score, precision_score, recall_score
 
+import wandb
 from mlops.data import corrupt_mnist
 from mlops.model import Model
 
@@ -14,6 +17,8 @@ STATS_PATH = "reports/figures"
 def train(cfg) -> None:
     """Function to train the model."""
     print("Training day and night")
+    cfg_dict = OmegaConf.to_container(cfg, resolve=True)
+    run = wandb.init(project="corrupt_mnist", entity="rokojo-danmarks-tekniske-universitet-dtu", config=cfg_dict)
 
     # Load model config and create model
     model = Model(cfg).to(DEVICE)
@@ -29,6 +34,8 @@ def train(cfg) -> None:
 
     for epoch in range(cfg.train.epochs):
         model.train()
+
+        preds, targets = [], []
         for i, (img, target) in enumerate(train_dataloader):
             img, target = img.to(DEVICE), target.to(DEVICE)
             optimizer.zero_grad()
@@ -36,22 +43,60 @@ def train(cfg) -> None:
             loss = loss_fn(y_pred, target)
             loss.backward()
             optimizer.step()
-            statistics["train_loss"].append(loss.item())
-
             accuracy = (y_pred.argmax(dim=1) == target).float().mean().item()
-            statistics["train_accuracy"].append(accuracy)
+            wandb.log({"train_loss": loss.item(), "train_accuracy": accuracy})
+
+            preds.append(y_pred.detach().cpu())
+            targets.append(target.detach().cpu())
 
             if i % 100 == 0:
                 print(f"Epoch {epoch}, iter {i}, loss: {loss.item()}")
 
-    print("Training complete")
-    torch.save(model.state_dict(), MODEL_PATH)
-    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
-    axs[0].plot(statistics["train_loss"])
-    axs[0].set_title("Train loss")
-    axs[1].plot(statistics["train_accuracy"])
-    axs[1].set_title("Train accuracy")
-    fig.savefig(f"{STATS_PATH}/training_statistics.png")
+                # add a plot of the input images
+                images = [
+                    wandb.Image(img[j].detach().cpu(), caption=f"Input image {j}") for j in range(min(5, len(img)))
+                ]
+                wandb.log({"images": images})
+
+                # add a plot of histogram of the gradients
+                grads = torch.cat([p.grad.flatten() for p in model.parameters() if p.grad is not None], 0)
+                wandb.log({"gradients": wandb.Histogram(grads)})
+
+        # add a custom matplotlib plot of the ROC curves
+        preds = torch.cat(preds, 0)
+        targets = torch.cat(targets, 0)
+
+        for class_id in range(10):
+            one_hot = torch.zeros_like(targets)
+            one_hot[targets == class_id] = 1
+            _ = RocCurveDisplay.from_predictions(
+                one_hot.numpy(),
+                preds[:, class_id].numpy(),
+                name=f"ROC curve for {class_id}",
+                plot_chance_level=(class_id == 2),
+            )
+
+        # alternatively use wandb.log({"roc": wandb.Image(plt)}
+        wandb.log({"roc": wandb.Image(plt.gcf())})
+        plt.close()  # close the plot to avoid memory leaks and overlapping figures
+
+    final_accuracy = accuracy_score(targets, preds.argmax(dim=1))
+    final_precision = precision_score(targets, preds.argmax(dim=1), average="weighted")
+    final_recall = recall_score(targets, preds.argmax(dim=1), average="weighted")
+    final_f1 = f1_score(targets, preds.argmax(dim=1), average="weighted")
+
+    # first we save the model to a file then log it as an artifact
+    torch.save(model.state_dict(), "model.pth")
+    artifact = wandb.Artifact(
+        name="corrupt_mnist_model",
+        type="model",
+        description="A model trained to classify corrupt MNIST images",
+        metadata={"accuracy": final_accuracy, "precision": final_precision, "recall": final_recall, "f1": final_f1},
+    )
+    artifact.add_file("model.pth")
+    run.log_artifact(artifact)
+    run.link_artifact(artifact=artifact, target_path="Corrupt_mnist_models/models", aliases=["latest"])
+    wandb.finish()
 
 
 if __name__ == "__main__":

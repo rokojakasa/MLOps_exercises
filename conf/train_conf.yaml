@@ -1,5 +1,5 @@
 train:
-  epochs: 10
+  epochs: 5
   batch_size: 32
 
   model_path: "models/model.pt"

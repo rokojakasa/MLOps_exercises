@@ -1,5 +1,8 @@
 docs/site/
 data/
+wandb/
+*.pth
+outputs/
 # test cache
 manual_test/
 
