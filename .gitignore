@@ -4,6 +4,7 @@ wandb/
 *.pth
 outputs/
 artifact_dir/
+service_account_key.json
 # test cache
 manual_test/
 
