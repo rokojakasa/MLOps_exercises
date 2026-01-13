@@ -86,14 +86,20 @@ def train(cfg) -> None:
     final_f1 = f1_score(targets, preds.argmax(dim=1), average="weighted")
 
     # first we save the model to a file then log it as an artifact
-    torch.save(model.state_dict(), "model.pth")
+    torch.save(
+        {
+            "state_dict": model.state_dict(),
+            "config": cfg_dict,
+        },
+        "model.ckpt",
+    )
     artifact = wandb.Artifact(
         name="corrupt_mnist_model",
         type="model",
         description="A model trained to classify corrupt MNIST images",
         metadata={"accuracy": final_accuracy, "precision": final_precision, "recall": final_recall, "f1": final_f1},
     )
-    artifact.add_file("model.pth")
+    artifact.add_file("model.ckpt")
     run.log_artifact(artifact)
     run.link_artifact(artifact=artifact, target_path="Corrupt_mnist_models/models", aliases=["latest"])
     wandb.finish()

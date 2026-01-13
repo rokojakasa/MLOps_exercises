@@ -3,6 +3,7 @@ data/
 wandb/
 *.pth
 outputs/
+artifact_dir/
 # test cache
 manual_test/
 
