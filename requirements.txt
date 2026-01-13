@@ -501,7 +501,7 @@ tomlkit==0.13.3
     # via dvc
 torch==2.9.1 ; sys_platform == 'darwin'
     # via mlops
-torch==2.9.1+cpu ; sys_platform != 'darwin'
+# torch==2.9.1+cpu ; sys_platform != 'darwin'
     # via mlops
 tqdm==4.67.1
     # via
