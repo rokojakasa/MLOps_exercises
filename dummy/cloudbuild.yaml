@@ -3,11 +3,11 @@ steps:
   id: 'Build container image'
   args: [
     'build',
-    '.',
+    'dummy',
     '-t',
     'europe-west1-docker.pkg.dev/$PROJECT_ID/mlops-registry/dummy',
     '-f',
-    'Dockerfile'
+    'dummy/Dockerfile'
   ]
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Push container image'
