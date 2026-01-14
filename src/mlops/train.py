@@ -105,7 +105,5 @@ def train(cfg) -> None:
     wandb.finish()
 
 
-# ds
-
 if __name__ == "__main__":
     train()
