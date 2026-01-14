@@ -64,6 +64,7 @@ explicit = true
 [tool.ruff]
 line-length = 120
 lint.select = ["I"]
+exclude = ["dummy"]
 
 [tool.coverage.run]
 omit = ["tests/*"]
